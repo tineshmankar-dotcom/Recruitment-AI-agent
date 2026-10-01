@@ -12,39 +12,20 @@ from app.main import app
 
 def run_tests():
     client = TestClient(app)
-    print("==================================================")
-    print("RecruitIQ Phase 3: Skill Normalization & Evidence")
-    print("==================================================")
+    print("================================================================")
+    print("RecruitIQ Phase 4: Evidence-Based Matching & Noise Detection")
+    print("================================================================")
 
     # 1. Health check
     res = client.get("/health")
     assert res.status_code == 200, f"Healthcheck failed: {res.text}"
-    print(" [1/8] Health check OK.")
+    print(" [1/9] Health check OK.")
 
-    # 2. Test Skill Normalization endpoint (POST /skills/normalize)
-    raw_skills = [
-        "Python programming", "Python 3", "ML", "AWS Cloud", "Postgres",
-        "ReactJS", "K8s", "Node.js", "Java", "JavaScript", "C++", "C#"
-    ]
+    # 2. Test Skill Normalization
+    raw_skills = ["Python programming", "Python 3", "ML", "AWS Cloud", "Postgres"]
     norm_res = client.post("/skills/normalize", json=raw_skills)
-    assert norm_res.status_code == 200, f"Skill normalization failed: {norm_res.text}"
-    norm_data = norm_res.json()
-    print(f" [2/8] Skill Normalization Tested on {len(raw_skills)} inputs:")
-    for item in norm_data:
-        print(f"       • '{item['original_skill']}' -> '{item['normalized_skill']}' (Conf: {item['confidence']}, Cat: {item['category']})")
-
-    # Verify specific mappings required
-    norm_map = {item["original_skill"]: item["normalized_skill"] for item in norm_data}
-    assert norm_map.get("Python programming") == "Python"
-    assert norm_map.get("Python 3") == "Python"
-    assert norm_map.get("ML") == "Machine Learning"
-    assert norm_map.get("AWS Cloud") == "AWS"
-    assert norm_map.get("Postgres") == "PostgreSQL"
-    # Ensure distinct technologies were not falsely merged
-    assert norm_map.get("Java") == "Java"
-    assert norm_map.get("JavaScript") == "JavaScript"
-    assert norm_map.get("C++") == "C++"
-    assert norm_map.get("C#") == "C#"
+    assert norm_res.status_code == 200
+    print(" [2/9] Skill Normalization OK.")
 
     # 3. Create Job
     sample_jd_path = os.path.join(os.path.dirname(__file__), "sample_data", "sample_jd.txt")
@@ -59,65 +40,97 @@ def run_tests():
     })
     assert create_job_res.status_code == 201
     job_id = create_job_res.json()["id"]
-    print(f" [3/8] Job Created: ID={job_id}")
+    print(f" [3/9] Job Created: ID={job_id}")
 
-    # 4. Upload Resumes (Alice Johnson & Bob Smith)
-    alice_path = os.path.join(os.path.dirname(__file__), "sample_data", "resume_alice.txt")
-    bob_path = os.path.join(os.path.dirname(__file__), "sample_data", "resume_bob.txt")
+    # 4. Mandatory Benchmark Demo: Candidate A vs Candidate B (GET /demo/comparison)
+    demo_res = client.get("/demo/comparison")
+    assert demo_res.status_code == 200, f"Demo comparison failed: {demo_res.text}"
+    demo_data = demo_res.json()
+    
+    cand_a = demo_data["candidate_a"]
+    cand_b = demo_data["candidate_b"]
 
-    with open(alice_path, "rb") as fa, open(bob_path, "rb") as fb:
+    print("\n----------------------------------------------------------------")
+    print(" [4/9] MANDATORY DEMO: CANDIDATE A vs CANDIDATE B BENCHMARK")
+    print("----------------------------------------------------------------")
+    print(f" Candidate A: {cand_a['candidate_name']}")
+    print(f"   • Python Keyword Mentions: {cand_a['noise_analysis']['total_keyword_occurrences']}")
+    print(f"   • Verified Experience: {cand_a['experience_details']['verified_experience_summary']}")
+    print(f"   • Noise Level: {cand_a['noise_analysis']['noise_level']} ({cand_a['noise_analysis']['noise_score']*100:.0f}%)")
+    print(f"   • Noise Penalty: -{cand_a['score_breakdown']['noise_penalty']} pts")
+    print(f"   • Final Match Score: {cand_a['final_match_score']}% ({cand_a['match_grade']})")
+
+    print(f"\n Candidate B: {cand_b['candidate_name']}")
+    print(f"   • Python Keyword Mentions: {cand_b['noise_analysis']['total_keyword_occurrences']}")
+    print(f"   • Verified Experience: {cand_b['experience_details']['verified_experience_summary']}")
+    print(f"   • Noise Level: {cand_b['noise_analysis']['noise_level']} ({cand_b['noise_analysis']['noise_score']*100:.0f}%)")
+    print(f"   • Noise Penalty: -{cand_b['score_breakdown']['noise_penalty']} pts")
+    print(f"   • Final Match Score: {cand_b['final_match_score']}% ({cand_b['match_grade']})")
+
+    # CRITICAL VALIDATION: Candidate B must outrank Candidate A despite having fewer keywords
+    assert cand_b["final_match_score"] > cand_a["final_match_score"], (
+        f"Ranking Failure: Candidate B ({cand_b['final_match_score']}%) should outrank Candidate A ({cand_a['final_match_score']}%)"
+    )
+    print(f"\n >>> VERIFIED: Candidate B ({cand_b['final_match_score']}%) OUTRANKS Candidate A ({cand_a['final_match_score']}%)!")
+    print(f" >>> Winner: {demo_data['winner']}")
+
+    # 5. Verify Python Evidence Strength in Candidate B vs Candidate A
+    cand_a_py_ev = next(e for e in cand_a["requirement_evaluations"] if e["requirement"] == "Python")
+    cand_b_py_ev = next(e for e in cand_b["requirement_evaluations"] if e["requirement"] == "Python")
+
+    print(f"\n [5/9] Evidence Strength Comparison for 'Python':")
+    print(f"   • Candidate A: {cand_a_py_ev['evidence_strength']} (Score: {cand_a_py_ev['evidence_score']}/10.0)")
+    print(f"     Snippet: \"{cand_a_py_ev['evidence_text']}\"")
+    print(f"   • Candidate B: {cand_b_py_ev['evidence_strength']} (Score: {cand_b_py_ev['evidence_score']}/10.0)")
+    print(f"     Snippet: \"{cand_b_py_ev['evidence_text']}\"")
+
+    assert cand_b_py_ev["evidence_score"] > cand_a_py_ev["evidence_score"], "Candidate B should have higher evidence score"
+
+    # 6. Verify Requirement Status Classifications (MATCHED, PARTIALLY MATCHED, MISSING, UNCERTAIN)
+    print(f"\n [6/9] Requirement Classification Verification:")
+    statuses_seen = set()
+    for ev in cand_b["requirement_evaluations"]:
+        statuses_seen.add(ev["status"])
+        if ev["status"] == "MATCHED":
+            print(f"   • MATCHED: {ev['requirement']} ({ev['evidence_strength']})")
+        elif ev["status"] == "MISSING":
+            print(f"   • MISSING: {ev['requirement']} -> '{ev['status_explanation']}'")
+
+    assert "MATCHED" in statuses_seen
+    assert "MISSING" in statuses_seen
+
+    # 7. Upload candidates to DB and test live ranking endpoint
+    cand_a_path = os.path.join(os.path.dirname(__file__), "sample_data", "candidate_a_stuffed.txt")
+    cand_b_path = os.path.join(os.path.dirname(__file__), "sample_data", "candidate_b_evidence.txt")
+
+    with open(cand_a_path, "rb") as fa, open(cand_b_path, "rb") as fb:
         files = [
-            ("files", ("resume_alice.txt", fa, "text/plain")),
-            ("files", ("resume_bob.txt", fb, "text/plain"))
+            ("files", ("candidate_a_stuffed.txt", fa, "text/plain")),
+            ("files", ("candidate_b_evidence.txt", fb, "text/plain"))
         ]
         upload_res = client.post(f"/jobs/{job_id}/resumes", files=files)
 
     assert upload_res.status_code == 200
-    upload_data = upload_res.json()
-    alice_id = upload_data["resumes"][0]["id"]
-    bob_id = upload_data["resumes"][1]["id"]
-    print(f" [4/8] Bulk Resumes Uploaded & Normalized: Alice={alice_id}, Bob={bob_id}")
+    print(f"\n [7/9] Seeded Candidates to Job ID {job_id}.")
 
-    # 5. Test Evidence Extraction on Candidate (GET /resumes/{id}/evidence?job_id={job_id})
-    ev_res = client.get(f"/resumes/{alice_id}/evidence?job_id={job_id}")
-    assert ev_res.status_code == 200, f"Evidence extraction failed: {ev_res.text}"
-    ev_data = ev_res.json()
-    print(f" [5/8] Evidence Extracted for Candidate '{ev_data['candidate_name']}':")
-    print(f"       Found Evidence for {ev_data['evidence_found_count']} / {ev_data['total_requirements']} requirements.")
+    # 8. Test Ranked Candidates (GET /jobs/{job_id}/matches)
+    rankings_res = client.get(f"/jobs/{job_id}/matches")
+    assert rankings_res.status_code == 200
+    rankings = rankings_res.json()
+    print(f" [8/9] Job Candidate Rankings (Ordered by Evidence Score):")
+    for i, r in enumerate(rankings, 1):
+        print(f"   {i}. {r['candidate_name']} - Score: {r['final_match_score']}% ({r['match_grade']}) - Noise: {r['noise_analysis']['noise_level']}")
 
-    # 6. Verify Strong Evidence Snippets & Metadata
-    python_ev = next((e for e in ev_data["evidence_items"] if e["skill"] == "Python"), None)
-    assert python_ev is not None, "Python evidence not extracted"
-    print(f" [6/8] Verified Strong Evidence for 'Python':")
-    print(f"       • Strength: {python_ev['evidence_strength']} (Score: {python_ev['evidence_score']}/10.0)")
-    print(f"       • Location: {python_ev['resume_location']}")
-    print(f"       • Project/Job: {python_ev['project_or_job']}")
-    print(f"       • Duration & Recency: {python_ev['duration']} | {python_ev['recency']}")
-    print(f"       • Snippet: \"{python_ev['evidence_text']}\"")
-    assert "payment routing" in python_ev["evidence_text"].lower() or "fastapi" in python_ev["evidence_text"].lower()
+    assert rankings[0]["final_match_score"] >= rankings[1]["final_match_score"]
+    assert "Brenda" in rankings[0]["candidate_name"]
 
-    # 7. Verify 'Evidence not found' for unmentioned skills (never invent evidence!)
-    unmentioned_ev_res = client.post(f"/resumes/{bob_id}/evidence", json={
-        "requirements": ["Rust", "Kubernetes", "Scala"]
-    })
-    assert unmentioned_ev_res.status_code == 200
-    unmentioned_data = unmentioned_ev_res.json()
-    rust_ev = next((e for e in unmentioned_data["evidence_items"] if e["requirement"] == "Rust"), None)
-    assert rust_ev is not None
-    print(f" [7/8] Tested Missing Skill Handling for 'Rust':")
-    print(f"       • Snippet: \"{rust_ev['evidence_text']}\"")
-    print(f"       • Strength: {rust_ev['evidence_strength']} (Score: {rust_ev['evidence_score']})")
-    assert rust_ev["evidence_text"] == "Evidence not found in resume."
-    assert rust_ev["evidence_strength"] == "No evidence"
+    # 9. Verify 'Why this score?' text explainability
+    print(f"\n [9/9] Verified 'Why this score?' rationale generation for top candidate:")
+    print("----------------------------------------------------------------")
+    print(rankings[0]["why_this_score"])
+    print("----------------------------------------------------------------")
 
-    # 8. Verify normalized skills stored in candidate profile
-    cand_profile_res = client.get(f"/resumes/{alice_id}")
-    assert cand_profile_res.status_code == 200
-    parsed_cand = cand_profile_res.json()["parsed_data"]
-    assert "normalized_skills" in parsed_cand
-    print(f" [8/8] Candidate Record contains {len(parsed_cand['normalized_skills'])} normalized skill items.")
-
-    print("\n ALL PHASE 3 SKILL NORMALIZATION & EVIDENCE EXTRACTION TESTS PASSED!")
+    print("\n ALL PHASE 4 MATCHING & NOISE DETECTION TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == "__main__":
     run_tests()

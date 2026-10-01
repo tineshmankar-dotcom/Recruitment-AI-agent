@@ -20,6 +20,7 @@ const navigation = [
   { name: 'Create Job', href: '/jobs/create', icon: BriefcasePlus },
   { name: 'Upload Resumes', href: '/resumes/upload', icon: UploadCloud },
   { name: 'Candidate Pool', href: '/candidates', icon: Users },
+  { name: 'Noise & Match Demo', href: '/benchmark', icon: Sparkles },
   { name: 'Shortlist', href: '/shortlist', icon: Award },
   { name: 'Interview Questions', href: '/interview-questions', icon: HelpCircle },
   { name: 'Settings', href: '/settings', icon: Settings },

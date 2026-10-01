@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import jobs_router, resumes_router, stats_router, evidence_router
+from app.routers import jobs_router, resumes_router, stats_router, evidence_router, matching_router
 
 app = FastAPI(
     title="RecruitIQ Backend API",
-    description="Intelligent Recruitment Agent API - Job Description Analysis, Resume Processing, Skill Normalization & Evidence Extraction",
-    version="1.3.0"
+    description="Intelligent Recruitment Agent API - Evidence-Based Matching & Noise Detection",
+    version="1.4.0"
 )
 
 # CORS Middleware for Next.js frontend
@@ -23,20 +23,29 @@ app.include_router(jobs_router, prefix=settings.API_V1_STR)
 app.include_router(resumes_router, prefix=settings.API_V1_STR)
 app.include_router(stats_router, prefix=settings.API_V1_STR)
 app.include_router(evidence_router, prefix=settings.API_V1_STR)
+app.include_router(matching_router, prefix=settings.API_V1_STR)
 
 # Direct root exposure
 app.include_router(jobs_router)
 app.include_router(resumes_router)
 app.include_router(stats_router)
 app.include_router(evidence_router)
+app.include_router(matching_router)
 
 @app.get("/")
 async def root():
     return {
         "status": "online",
         "app": "RecruitIQ Recruitment Intelligence Platform",
-        "version": "1.3.0",
-        "features": ["JD Analysis", "Resume Bulk Parsing", "Skill Normalization", "Evidence Extraction"],
+        "version": "1.4.0",
+        "features": [
+            "JD Structuring",
+            "Resume Parsing",
+            "Skill Normalization",
+            "Evidence Extraction",
+            "Noise Detection",
+            "Evidence-Based Matching"
+        ],
         "docs": "/docs"
     }
 

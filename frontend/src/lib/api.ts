@@ -68,6 +68,72 @@ export interface EvidenceResponse {
   evidence_items: EvidenceItem[];
 }
 
+export interface RequirementMatchItem {
+  requirement: string;
+  importance: string;
+  status: 'MATCHED' | 'PARTIALLY MATCHED' | 'MISSING' | 'UNCERTAIN';
+  status_explanation: string;
+  evidence_strength: string;
+  evidence_score: number;
+  evidence_text: string;
+  resume_location: string;
+  project_or_job: string;
+  duration?: string | null;
+  recency: string;
+}
+
+export interface ScoreBreakdown {
+  mandatory_requirements: number;
+  relevant_experience: number;
+  evidence_strength: number;
+  skill_depth: number;
+  recency: number;
+  preferred_requirements: number;
+  noise_penalty: number;
+  uncertainty: number;
+}
+
+export interface NoiseAnalysisResponse {
+  noise_level: 'Low' | 'Moderate' | 'High' | 'Critical';
+  noise_score: number;
+  total_keyword_occurrences: number;
+  total_evidence_backed_occurrences: number;
+  total_strong_evidence: number;
+  total_weak_evidence: number;
+  stuffed_skills: string[];
+  skills_only_in_list: string[];
+  jd_copy_paste_detected: boolean;
+  noise_reasons: string[];
+  skill_breakdown?: Record<string, any>;
+}
+
+export interface CandidateMatchResponse {
+  candidate_id: string;
+  candidate_name: string;
+  job_id: string;
+  job_title: string;
+  final_match_score: number;
+  match_grade: string;
+  score_breakdown: ScoreBreakdown;
+  experience_details?: {
+    verified_experience_months: number;
+    verified_experience_summary: string;
+    required_experience_years: number;
+  };
+  noise_analysis: NoiseAnalysisResponse;
+  requirement_evaluations: RequirementMatchItem[];
+  why_this_score: string;
+}
+
+export interface CandidateComparisonResponse {
+  job_title: string;
+  candidate_a: CandidateMatchResponse;
+  candidate_b: CandidateMatchResponse;
+  comparison_summary: string;
+  winner: string;
+  rationale: string;
+}
+
 export interface EducationItem {
   degree?: string;
   institution?: string;
@@ -158,7 +224,7 @@ export interface BulkUploadResponse {
   resumes: Resume[];
 }
 
-// API Helper functions
+// API Functions
 export async function fetchDashboardStats(): Promise<DashboardMetrics> {
   const res = await fetch(`${API_BASE_URL}/stats/dashboard`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch dashboard metrics');
@@ -258,6 +324,24 @@ export async function normalizeSkills(skills: string[]): Promise<NormalizedSkill
     body: JSON.stringify(skills),
   });
   if (!res.ok) throw new Error('Failed to normalize skills');
+  return res.json();
+}
+
+export async function fetchJobCandidateMatches(jobId: string): Promise<CandidateMatchResponse[]> {
+  const res = await fetch(`${API_BASE_URL}/jobs/${jobId}/matches`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to fetch matches for job ${jobId}`);
+  return res.json();
+}
+
+export async function fetchCandidateJobMatch(jobId: string, resumeId: string): Promise<CandidateMatchResponse> {
+  const res = await fetch(`${API_BASE_URL}/jobs/${jobId}/candidates/${resumeId}/match`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to fetch match evaluation`);
+  return res.json();
+}
+
+export async function fetchBenchmarkComparison(): Promise<CandidateComparisonResponse> {
+  const res = await fetch(`${API_BASE_URL}/demo/comparison`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch benchmark comparison');
   return res.json();
 }
 

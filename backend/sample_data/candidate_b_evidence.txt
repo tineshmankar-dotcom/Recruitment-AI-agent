@@ -1,0 +1,26 @@
+Brenda Vance
+Email: brenda.vance@example.com | Phone: (555) 444-5566 | Location: Seattle, WA
+GitHub: github.com/brendavance | LinkedIn: linkedin.com/in/brendavance
+
+Professional Summary:
+Software Engineer with 18 months of professional experience architecting backend microservices, high-throughput APIs, and cloud infrastructure.
+
+Professional Experience:
+
+Backend Software Engineer | Apex Intelligence Systems
+January 2023 - June 2024 (18 months)
+- Built and deployed a production ML API using Python, FastAPI, Docker, and AWS handling 12M monthly inference requests with sub-50ms latency.
+- Optimized PostgreSQL database indexes and Redis caching layers, cutting query latency by 40%.
+- Automated CI/CD deployment pipelines using GitHub Actions and AWS ECS.
+- Collaborated with ML scientists to containerize PyTorch models and expose resilient RESTful endpoints.
+
+Key Projects:
+Project: Predictive Scoring Service
+- Architected asynchronous event consumer in Python utilizing Docker containers on AWS, processing real-time telemetry with 99.95% uptime.
+
+Technical Proficiencies:
+Python, FastAPI, PostgreSQL, Docker, AWS, Redis, Git, REST API, CI/CD, Microservices
+
+Education:
+Bachelor of Science in Computer Science
+University of Washington | 2019 - 2023

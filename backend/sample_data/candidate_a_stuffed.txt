@@ -1,0 +1,30 @@
+Alex Rivera
+Email: alex.rivera@example.com | Phone: (555) 111-2233 | Location: Austin, TX
+GitHub: github.com/alexrivera | LinkedIn: linkedin.com/in/alexrivera
+
+Objective & Summary:
+Enthusiastic Python developer with extensive Python knowledge seeking a Python software role. Highly experienced in Python coding, Python scripting, Python libraries, Python algorithms, and modern Python web development. Passionate about Python, Python programming, and Python data structures.
+
+Technical Skills:
+- Programming: Python, Python 3, Python scripting, Basic JavaScript, HTML, CSS
+- Frameworks: Python Flask, Python Django basic, Python FastAPI awareness
+- Databases: SQLite, Basic SQL, PostgreSQL
+- Tools: Git, GitHub, VS Code, Python Pip, Python Virtualenv
+
+Work Experience:
+
+Python Engineering Intern | Alpha Startups
+June 2024 - August 2024 (2 months)
+- Wrote basic Python scripts for internal data cleanup and text formatting.
+- Practiced Python syntax and assisted team with Python unit test runs.
+- Assisted with Python documentation and attended daily engineering standups.
+- Architect and develop high-throughput REST APIs and asynchronous microservices using Python. (Copied JD language)
+
+Academic Coursework & Projects:
+Project: Python Student Grade Tracker
+- Built a command-line Python console application using Python standard library to store student marks in a text file.
+
+Education:
+Bachelor of Science in Computer Applications
+State University | Graduated May 2024
+Relevant Course: Introduction to Python Programming
