@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Users,
   Search,
@@ -12,7 +13,9 @@ import {
   GraduationCap,
   Sparkles,
   ArrowUpDown,
-  UploadCloud
+  UploadCloud,
+  GitPullRequest,
+  CheckCircle2
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -20,10 +23,12 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { fetchAllResumes, Resume } from '@/lib/api';
 
 export default function CandidatePoolPage() {
+  const router = useRouter();
   const [candidates, setCandidates] = useState<Resume[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadCandidates() {
@@ -40,6 +45,26 @@ export default function CandidatePoolPage() {
     loadCandidates();
   }, []);
 
+  const toggleSelectCandidate = (candidateId: string) => {
+    if (selectedCandidateIds.includes(candidateId)) {
+      setSelectedCandidateIds(selectedCandidateIds.filter(id => id !== candidateId));
+    } else {
+      if (selectedCandidateIds.length >= 4) {
+        alert('You can select up to 4 candidates to compare.');
+        return;
+      }
+      setSelectedCandidateIds([...selectedCandidateIds, candidateId]);
+    }
+  };
+
+  const handleCompareSelected = () => {
+    if (selectedCandidateIds.length < 2) {
+      alert('Please select at least 2 candidates to compare.');
+      return;
+    }
+    router.push(`/candidates/compare?ids=${selectedCandidateIds.join(',')}`);
+  };
+
   const filteredCandidates = candidates.filter((cand) => {
     const matchesStatus = statusFilter === 'all' || cand.status === statusFilter;
     const q = searchQuery.toLowerCase();
@@ -55,7 +80,7 @@ export default function CandidatePoolPage() {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* Page Header */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
@@ -64,16 +89,27 @@ export default function CandidatePoolPage() {
             Candidate Intelligence Pool
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Search, filter, and inspect structured candidate records extracted from ingested resumes.
+            Search, filter, select and compare candidates across verified evidence, mandatory skills, and noise detection.
           </p>
         </div>
-        <Link
-          href="/resumes/upload"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 active:scale-98 transition-all"
-        >
-          <UploadCloud className="h-4 w-4" />
-          Ingest New Resumes
-        </Link>
+        <div className="flex items-center gap-3">
+          {selectedCandidateIds.length >= 2 && (
+            <button
+              onClick={handleCompareSelected}
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-700 transition-all animate-pulse"
+            >
+              <GitPullRequest className="h-4 w-4" />
+              Compare Selected ({selectedCandidateIds.length})
+            </button>
+          )}
+          <Link
+            href="/resumes/upload"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all"
+          >
+            <UploadCloud className="h-4 w-4 text-indigo-400" />
+            Ingest New Resumes
+          </Link>
+        </div>
       </div>
 
       {/* Filters & Search Toolbar */}
@@ -128,7 +164,8 @@ export default function CandidatePoolPage() {
             <table className="w-full text-left text-xs">
               <thead className="border-b border-slate-100 bg-slate-50/75 text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400 font-semibold uppercase tracking-wider">
                 <tr>
-                  <th className="py-3.5 pl-6 pr-3">Candidate</th>
+                  <th className="py-3.5 pl-6 pr-3 w-10">Select</th>
+                  <th className="py-3.5 px-3">Candidate</th>
                   <th className="px-3 py-3.5">Status</th>
                   <th className="px-3 py-3.5">Key Skills Extracted</th>
                   <th className="px-3 py-3.5">Experience & Role</th>
@@ -137,81 +174,97 @@ export default function CandidatePoolPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {filteredCandidates.map((cand) => (
-                  <tr
-                    key={cand.id}
-                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
-                  >
-                    <td className="py-4 pl-6 pr-3">
-                      <div className="space-y-0.5">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white">
-                          {cand.candidate_name || 'Candidate'}
-                        </span>
-                        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
-                          <span>{cand.email || 'Email not listed'}</span>
-                          {cand.phone && <span>• {cand.phone}</span>}
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          ID: {cand.id}
-                        </span>
-                      </div>
-                    </td>
+                {filteredCandidates.map((cand) => {
+                  const isSelected = selectedCandidateIds.includes(cand.id);
+                  return (
+                    <tr
+                      key={cand.id}
+                      className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors ${
+                        isSelected ? 'bg-indigo-50/30 dark:bg-indigo-950/20' : ''
+                      }`}
+                    >
+                      <td className="py-4 pl-6 pr-3">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelectCandidate(cand.id)}
+                          className="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                        />
+                      </td>
 
-                    <td className="px-3 py-4">
-                      <Badge variant={cand.status}>{cand.status}</Badge>
-                    </td>
-
-                    <td className="px-3 py-4 max-w-xs">
-                      <div className="flex flex-wrap gap-1">
-                        {cand.parsed_data?.skills && cand.parsed_data.skills.length > 0 ? (
-                          cand.parsed_data.skills.slice(0, 4).map((s, i) => (
-                            <span
-                              key={i}
-                              className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                            >
-                              {s}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-slate-400 italic">No skills tagged</span>
-                        )}
-                        {cand.parsed_data?.skills && cand.parsed_data.skills.length > 4 && (
-                          <span className="text-[10px] text-slate-400 font-semibold">
-                            +{cand.parsed_data.skills.length - 4} more
+                      <td className="py-4 px-3">
+                        <div className="space-y-0.5">
+                          <span className="font-bold text-sm text-slate-900 dark:text-white">
+                            {cand.candidate_name || 'Candidate'}
                           </span>
-                        )}
-                      </div>
-                    </td>
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
+                            <span>{cand.email || 'Email not listed'}</span>
+                            {cand.phone && <span>• {cand.phone}</span>}
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            ID: {cand.id}
+                          </span>
+                        </div>
+                      </td>
 
-                    <td className="px-3 py-4">
-                      <div className="space-y-0.5">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
-                          {cand.parsed_data?.job_titles?.[0] || 'Software Professional'}
-                        </span>
-                        <p className="text-[11px] text-slate-400">
-                          {cand.parsed_data?.companies?.[0] || 'Tech Enterprise'}
-                        </p>
-                      </div>
-                    </td>
+                      <td className="px-3 py-4">
+                        <Badge variant={cand.status}>{cand.status}</Badge>
+                      </td>
 
-                    <td className="px-3 py-4">
-                      <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
-                        <FileText className="h-3.5 w-3.5 text-indigo-500" />
-                        <span className="truncate max-w-[120px]">{cand.file_name}</span>
-                      </div>
-                    </td>
+                      <td className="px-3 py-4 max-w-xs">
+                        <div className="flex flex-wrap gap-1">
+                          {cand.parsed_data?.skills && cand.parsed_data.skills.length > 0 ? (
+                            cand.parsed_data.skills.slice(0, 4).map((s, i) => (
+                              <span
+                                key={i}
+                                className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                              >
+                                {s}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-slate-400 italic">No skills tagged</span>
+                          )}
+                          {cand.parsed_data?.skills && cand.parsed_data.skills.length > 4 && (
+                            <span className="text-[10px] text-slate-400 font-semibold">
+                              +{cand.parsed_data.skills.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="py-4 pl-3 pr-6 text-right">
-                      <Link
-                        href={`/candidates/${cand.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                        View Profile
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-3 py-4">
+                        <div className="space-y-0.5">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            {cand.parsed_data?.job_titles?.[0] || 'Software Professional'}
+                          </span>
+                          <p className="text-[11px] text-slate-400">
+                            {cand.parsed_data?.companies?.[0] || 'Tech Enterprise'}
+                          </p>
+                        </div>
+                      </td>
+
+                      <td className="px-3 py-4">
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                          <FileText className="h-3.5 w-3.5 text-indigo-500" />
+                          <span className="truncate max-w-[120px]">{cand.file_name}</span>
+                        </div>
+                      </td>
+
+                      <td className="py-4 pl-3 pr-6 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/candidates/${cand.id}`}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                            View Profile
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

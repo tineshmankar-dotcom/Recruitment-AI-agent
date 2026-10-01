@@ -122,7 +122,48 @@ export interface CandidateMatchResponse {
   };
   noise_analysis: NoiseAnalysisResponse;
   requirement_evaluations: RequirementMatchItem[];
+  
+  // Phase 5 Explainable Shortlist metrics
+  mandatory_coverage: number;
+  mandatory_met_count: number;
+  mandatory_total_count: number;
+  preferred_coverage: number;
+  preferred_met_count: number;
+  preferred_total_count: number;
+  strong_matches: string[];
+  partial_matches: string[];
+  missing_requirements: string[];
+  uncertain_requirements: string[];
+  evidence_strength_summary: string;
+  
   why_this_score: string;
+}
+
+export interface RequirementComparisonRow {
+  requirement: string;
+  importance: string;
+  candidate_evaluations: Record<string, {
+    status: string;
+    evidence_strength: string;
+    evidence_score: number;
+    evidence_text: string;
+    resume_location: string;
+    duration?: string | null;
+    recency: string;
+  }>;
+}
+
+export interface MultiCandidateCompareResponse {
+  job_id?: string;
+  job_title: string;
+  candidates: CandidateMatchResponse[];
+  requirement_matrix: RequirementComparisonRow[];
+  summary_comparison: {
+    top_candidate: string;
+    total_candidates_compared: number;
+    highest_score: number;
+    lowest_noise_candidate: string;
+  };
 }
 
 export interface CandidateComparisonResponse {
@@ -339,9 +380,28 @@ export async function fetchCandidateJobMatch(jobId: string, resumeId: string): P
   return res.json();
 }
 
+export async function fetchResumeMatch(resumeId: string, jobId?: string): Promise<CandidateMatchResponse> {
+  const url = jobId
+    ? `${API_BASE_URL}/resumes/${resumeId}/match?job_id=${jobId}`
+    : `${API_BASE_URL}/resumes/${resumeId}/match`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to fetch match evaluation for candidate ${resumeId}`);
+  return res.json();
+}
+
 export async function fetchBenchmarkComparison(): Promise<CandidateComparisonResponse> {
   const res = await fetch(`${API_BASE_URL}/demo/comparison`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch benchmark comparison');
+  return res.json();
+}
+
+export async function compareMultipleCandidates(candidateIds: string[], jobId?: string): Promise<MultiCandidateCompareResponse> {
+  const res = await fetch(`${API_BASE_URL}/candidates/compare`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ candidate_ids: candidateIds, job_id: jobId }),
+  });
+  if (!res.ok) throw new Error('Failed to compare candidates');
   return res.json();
 }
 

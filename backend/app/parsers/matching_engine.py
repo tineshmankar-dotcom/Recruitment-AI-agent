@@ -148,10 +148,30 @@ class MatchingEngine:
 
         final_match_score = max(0.0, min(100.0, round(weighted_raw - noise_penalty, 1)))
 
-        # 5. Uncertainty Metric
-        missing_count = sum(1 for r in requirement_evaluations if r["status"] == "MISSING")
-        uncertain_count = sum(1 for r in requirement_evaluations if r["status"] == "UNCERTAIN")
-        uncertainty_score = round(((missing_count + uncertain_count) / max(1, len(requirement_evaluations))) * 100, 1)
+        # 5. Uncertainty Metric & Phase 5 Classification Collections
+        strong_matches = [e["requirement"] for e in requirement_evaluations if e["status"] == "MATCHED"]
+        partial_matches = [e["requirement"] for e in requirement_evaluations if e["status"] == "PARTIALLY MATCHED"]
+        missing_requirements = [e["requirement"] for e in requirement_evaluations if e["status"] == "MISSING"]
+        uncertain_requirements = [e["requirement"] for e in requirement_evaluations if e["status"] == "UNCERTAIN"]
+
+        mand_evals = [e for e in requirement_evaluations if e["importance"] == "MANDATORY"]
+        mand_met = sum(1 for e in mand_evals if e["status"] == "MATCHED")
+        mand_coverage = round((mand_met / max(1, len(mand_evals))) * 100, 1)
+
+        pref_evals = [e for e in requirement_evaluations if e["importance"] == "PREFERRED"]
+        pref_met = sum(1 for e in pref_evals if e["status"] in ["MATCHED", "PARTIALLY MATCHED"])
+        pref_coverage = round((pref_met / max(1, len(pref_evals))) * 100, 1) if pref_evals else 100.0
+
+        if evidence_strength_score >= 80:
+            ev_summary = "Leadership & Production Grade"
+        elif evidence_strength_score >= 60:
+            ev_summary = "Professional Experience"
+        elif evidence_strength_score >= 35:
+            ev_summary = "Academic & Personal Projects"
+        else:
+            ev_summary = "Weak / Mere Mention"
+
+        uncertainty_score = round(((len(missing_requirements) + len(uncertain_requirements)) / max(1, len(requirement_evaluations))) * 100, 1)
 
         # 6. Generate "Why this score?" Explainability Explanation
         why_this_score = MatchingEngine._generate_why_this_score(
@@ -189,6 +209,17 @@ class MatchingEngine:
             },
             "noise_analysis": noise_analysis,
             "requirement_evaluations": requirement_evaluations,
+            "mandatory_coverage": mand_coverage,
+            "mandatory_met_count": mand_met,
+            "mandatory_total_count": len(mand_evals),
+            "preferred_coverage": pref_coverage,
+            "preferred_met_count": pref_met,
+            "preferred_total_count": len(pref_evals),
+            "strong_matches": strong_matches,
+            "partial_matches": partial_matches,
+            "missing_requirements": missing_requirements,
+            "uncertain_requirements": uncertain_requirements,
+            "evidence_strength_summary": ev_summary,
             "why_this_score": why_this_score
         }
 

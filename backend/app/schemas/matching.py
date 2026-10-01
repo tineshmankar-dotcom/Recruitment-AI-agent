@@ -48,7 +48,37 @@ class CandidateMatchResponse(BaseModel):
     experience_details: Optional[Dict[str, Any]] = None
     noise_analysis: NoiseAnalysisResponse
     requirement_evaluations: List[RequirementMatchItem]
+    
+    # Phase 5 Explainable Shortlist metrics
+    mandatory_coverage: float = 0.0
+    mandatory_met_count: int = 0
+    mandatory_total_count: int = 0
+    preferred_coverage: float = 0.0
+    preferred_met_count: int = 0
+    preferred_total_count: int = 0
+    strong_matches: List[str] = []
+    partial_matches: List[str] = []
+    missing_requirements: List[str] = []
+    uncertain_requirements: List[str] = []
+    evidence_strength_summary: str = "Moderate"
+    
     why_this_score: str
+
+class MultiCandidateCompareRequest(BaseModel):
+    candidate_ids: List[str]
+    job_id: Optional[str] = None
+
+class RequirementComparisonRow(BaseModel):
+    requirement: str
+    importance: str
+    candidate_evaluations: Dict[str, Dict[str, Any]]  # candidate_id -> { status, strength, snippet, score }
+
+class MultiCandidateCompareResponse(BaseModel):
+    job_id: Optional[str] = None
+    job_title: str
+    candidates: List[CandidateMatchResponse]
+    requirement_matrix: List[RequirementComparisonRow]
+    summary_comparison: Dict[str, Any]
 
 class CandidateComparisonResponse(BaseModel):
     job_title: str

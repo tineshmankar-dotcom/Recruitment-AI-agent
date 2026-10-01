@@ -8,7 +8,8 @@ from app.parsers.doc_parser import DocumentParser
 from app.parsers.resume_parser import ResumeParser
 from app.parsers.jd_parser import JobDescriptionParser
 from app.schemas.matching import (
-    CandidateMatchResponse, CandidateComparisonResponse
+    CandidateMatchResponse, CandidateComparisonResponse,
+    MultiCandidateCompareRequest, MultiCandidateCompareResponse, RequirementComparisonRow
 )
 
 router = APIRouter(prefix="", tags=["Matching & Noise Detection"])
@@ -30,6 +31,45 @@ async def get_candidate_match(
     resume = ResumeRepository.get(resume_id)
     if not resume:
         raise HTTPException(status_code=404, detail=f"Resume with ID '{resume_id}' not found.")
+
+    match_result = MatchingEngine.evaluate_match(resume, job)
+    return match_result
+
+@router.get("/resumes/{resume_id}/match", response_model=CandidateMatchResponse)
+async def get_resume_match(
+    resume_id: str,
+    job_id: Optional[str] = Query(None)
+):
+    """
+    Evaluates candidate matching for a candidate against either their linked job or a specified job.
+    """
+    resume = ResumeRepository.get(resume_id)
+    if not resume:
+        raise HTTPException(status_code=404, detail=f"Resume with ID '{resume_id}' not found.")
+
+    target_job_id = job_id or resume.get("job_id")
+    job = None
+    if target_job_id:
+        job = JobRepository.get(target_job_id)
+
+    if not job:
+        all_jobs = JobRepository.list_all()
+        if all_jobs:
+            job = all_jobs[0]
+        else:
+            sample_jd_path = os.path.join(os.path.dirname(__file__), "..", "..", "sample_data", "sample_jd.txt")
+            if os.path.exists(sample_jd_path):
+                with open(sample_jd_path, "r", encoding="utf-8") as f:
+                    jd_text = f.read()
+            else:
+                jd_text = "Senior Python Engineer with FastAPI, PostgreSQL, Docker, AWS experience."
+            parsed_jd = JobDescriptionParser.parse(jd_text, "Software Engineering Position")
+            job = {
+                "id": "default-job",
+                "title": "Software Engineering Position",
+                "raw_description": jd_text,
+                "parsed_data": parsed_jd
+            }
 
     match_result = MatchingEngine.evaluate_match(resume, job)
     return match_result
@@ -57,15 +97,123 @@ async def get_job_candidate_rankings(
     results.sort(key=lambda x: x["final_match_score"], reverse=True)
     return results
 
+@router.post("/candidates/compare", response_model=MultiCandidateCompareResponse)
+async def compare_multiple_candidates(
+    request: MultiCandidateCompareRequest
+):
+    """
+    Multi-candidate side-by-side comparison matrix.
+    Aligns requirement evaluations, verified experience, noise level, and evidence scores row-by-row.
+    """
+    if not request.candidate_ids:
+        raise HTTPException(status_code=400, detail="Please select at least 2 candidates to compare.")
+
+    # Find job
+    job = None
+    if request.job_id:
+        job = JobRepository.get(request.job_id)
+    
+    if not job:
+        # Default to first available job or create mock representation
+        all_jobs = JobRepository.list_all()
+        job = all_jobs[0] if all_jobs else {
+            "id": "default-job",
+            "title": "Software Engineering Position",
+            "parsed_data": {
+                "classified_requirements": [
+                    {"skill": "Python", "importance": "mandatory", "minimum_experience": 2},
+                    {"skill": "FastAPI", "importance": "mandatory", "minimum_experience": 2},
+                    {"skill": "PostgreSQL", "importance": "mandatory", "minimum_experience": 2},
+                    {"skill": "Docker", "importance": "preferred", "minimum_experience": 1},
+                    {"skill": "AWS", "importance": "preferred", "minimum_experience": 1},
+                    {"skill": "Microservices", "importance": "preferred", "minimum_experience": 1}
+                ]
+            }
+        }
+
+    candidate_matches: List[Dict[str, Any]] = []
+    for cid in request.candidate_ids:
+        resume = ResumeRepository.get(cid)
+        if resume:
+            eval_res = MatchingEngine.evaluate_match(resume, job)
+            candidate_matches.append(eval_res)
+
+    if not candidate_matches:
+        raise HTTPException(status_code=404, detail="None of the specified candidates were found in the database.")
+
+    # Extract unified requirement list
+    all_requirements = []
+    seen_reqs = set()
+    for cm in candidate_matches:
+        for re_item in cm["requirement_evaluations"]:
+            req_name = re_item["requirement"]
+            if req_name not in seen_reqs:
+                seen_reqs.add(req_name)
+                all_requirements.append({
+                    "requirement": req_name,
+                    "importance": re_item["importance"]
+                })
+
+    # Build row-by-row matrix
+    requirement_matrix: List[Dict[str, Any]] = []
+    for r in all_requirements:
+        req_name = r["requirement"]
+        eval_map = {}
+        for cm in candidate_matches:
+            cid = cm["candidate_id"]
+            cand_eval = next((e for e in cm["requirement_evaluations"] if e["requirement"] == req_name), None)
+            if cand_eval:
+                eval_map[cid] = {
+                    "status": cand_eval["status"],
+                    "evidence_strength": cand_eval["evidence_strength"],
+                    "evidence_score": cand_eval["evidence_score"],
+                    "evidence_text": cand_eval["evidence_text"],
+                    "resume_location": cand_eval["resume_location"],
+                    "duration": cand_eval["duration"],
+                    "recency": cand_eval["recency"]
+                }
+            else:
+                eval_map[cid] = {
+                    "status": "MISSING",
+                    "evidence_strength": "No evidence",
+                    "evidence_score": 0.0,
+                    "evidence_text": "Evidence not found in resume.",
+                    "resume_location": "N/A",
+                    "duration": None,
+                    "recency": "N/A"
+                }
+
+        requirement_matrix.append({
+            "requirement": req_name,
+            "importance": r["importance"],
+            "candidate_evaluations": eval_map
+        })
+
+    # Generate summary comparison
+    sorted_by_score = sorted(candidate_matches, key=lambda x: x["final_match_score"], reverse=True)
+    winner = sorted_by_score[0]["candidate_name"] if sorted_by_score else "N/A"
+
+    return {
+        "job_id": job.get("id"),
+        "job_title": job.get("title", "Engineering Position"),
+        "candidates": candidate_matches,
+        "requirement_matrix": requirement_matrix,
+        "summary_comparison": {
+            "top_candidate": winner,
+            "total_candidates_compared": len(candidate_matches),
+            "highest_score": sorted_by_score[0]["final_match_score"] if sorted_by_score else 0,
+            "lowest_noise_candidate": min(candidate_matches, key=lambda x: x["noise_analysis"]["noise_score"])["candidate_name"] if candidate_matches else "N/A"
+        }
+    }
+
 @router.get("/demo/comparison", response_model=CandidateComparisonResponse)
 async def get_synthetic_candidate_comparison():
     """
-    Mandatory Phase 4 Benchmark Demo:
+    Mandatory Phase 4 & Phase 5 Benchmark Demo:
     Candidate A (15 keyword mentions, 2 mo internship, weak evidence, high noise)
     vs
     Candidate B (4 keyword mentions, 18 mo professional experience, production ML API, strong evidence).
     """
-    # Load Sample JD
     sample_jd_path = os.path.join(os.path.dirname(__file__), "..", "..", "sample_data", "sample_jd.txt")
     with open(sample_jd_path, "r", encoding="utf-8") as f:
         jd_text = f.read()
@@ -78,7 +226,6 @@ async def get_synthetic_candidate_comparison():
         "parsed_data": parsed_jd
     }
 
-    # Load Candidate A (Stuffed / 15 keywords / 2 mo internship)
     cand_a_path = os.path.join(os.path.dirname(__file__), "..", "..", "sample_data", "candidate_a_stuffed.txt")
     with open(cand_a_path, "r", encoding="utf-8") as f:
         cand_a_text = f.read()
@@ -91,7 +238,6 @@ async def get_synthetic_candidate_comparison():
         "parsed_data": cand_a_parsed
     }
 
-    # Load Candidate B (Evidence-Backed / 4 keywords / 18 mo pro exp / production ML API)
     cand_b_path = os.path.join(os.path.dirname(__file__), "..", "..", "sample_data", "candidate_b_evidence.txt")
     with open(cand_b_path, "r", encoding="utf-8") as f:
         cand_b_text = f.read()
