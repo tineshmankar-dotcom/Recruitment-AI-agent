@@ -1,0 +1,25 @@
+JORDAN BLAKE
+Email: jordan.blake@example.com | Phone: +1-555-0107 | Location: Dallas, TX
+
+SUMMARY:
+Technical professional involved with cloud systems, data architectures, coding, and agile delivery across enterprise environments.
+
+EXPERIENCE:
+
+Technology Consultant | Global Advisory Solutions | Dallas, TX
+January 2022 – Present (2.5 years)
+• Assisted team with backend services, Python scripts, and database maintenance tasks.
+• Supported cloud migration discussions and reviewed Docker and AWS architecture diagrams.
+• Handled general software engineering troubleshooting and ticket resolution for clients.
+• Participated in sprint planning and daily standups across various cross-functional groups.
+
+Systems Associate | Digital Commerce Inc | Dallas, TX
+June 2020 – December 2021 (1.5 years)
+• Handled miscellaneous data entry, SQL queries, and spreadsheet automation.
+• Looked into API integrations and explored microservices concepts for legacy modernization.
+
+EDUCATION:
+Bachelor of Business Administration in Management Information Systems | UT Dallas | 2020
+
+SKILLS:
+Python, FastAPI, AWS, Docker, PostgreSQL, Microservices, Cloud Architecture, SQL, Consulting, Agile, Jira

@@ -1,0 +1,29 @@
+KEVIN BUZZWORD
+Email: kevin.buzz@example.com | Phone: +1-555-0102 | Location: San Jose, CA
+
+SUMMARY:
+Expert Python Python Python Developer with FastAPI Python AWS Docker Kubernetes Python PostgreSQL Redis Microservices Python AWS Docker developer with 5+ buzzwords. Python specialist.
+
+SKILLS:
+Python, Python 3, Python programming, Python scripts, FastAPI, FastAPI framework, FastAPI backend, Docker, Docker containers, Docker images, Dockerfile, AWS, AWS Cloud, Amazon Web Services, PostgreSQL, Postgres, Redis, Kafka, Kubernetes, Microservices, CI/CD, Machine Learning, Python AI, Python Data Science.
+
+EXPERIENCE:
+
+Software Intern | QuickApp LLC
+June 2024 – August 2024 (2 months)
+• Python developer using Python and FastAPI for Python tasks.
+• Read Docker documentation and ran Docker container locally on laptop.
+• Created basic PostgreSQL test table with 10 rows.
+• Python AWS Docker PostgreSQL Redis Kubernetes Microservices enthusiast.
+
+Junior Lab Assistant | Campus Computer Center
+January 2024 – May 2024 (4 months)
+• Assisted students with basic Python print statements and syntax errors.
+• Mentioned AWS and Cloud computing concepts in student study groups.
+
+EDUCATION:
+Bachelor of Science in Information Technology | State College | 2024
+
+PROJECTS:
+Python Calculator: Built calculator in Python. Python GUI.
+Python Webpage: Simple Python page.

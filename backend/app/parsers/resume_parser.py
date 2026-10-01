@@ -260,9 +260,9 @@ class ResumeParser:
                     "achievements": []
                 }
             elif current_exp:
-                if re.match(r"^[\*\-\•]", line_str):
-                    cleaned = re.sub(r"^[\*\-\•]\s*", "", line_str)
-                    if any(k in cleaned.lower() for k in ["improved", "reduced", "increased", "awarded", "delivered", "built", "%"]):
+                cleaned = re.sub(r"^[\*\-\•]\s*", "", line_str)
+                if len(cleaned.split()) >= 3:
+                    if any(k in cleaned.lower() for k in ["improved", "reduced", "increased", "awarded", "delivered", "built", "%", "architected", "engineered", "scaled"]):
                         current_exp["achievements"].append(cleaned)
                     else:
                         current_exp["responsibilities"].append(cleaned)

@@ -1,0 +1,27 @@
+DEREK PLAGIAR
+Email: derek.plagiar@example.com | Phone: +1-555-0108 | Location: Atlanta, GA
+
+SUMMARY:
+We are seeking a Lead Python Backend Architect to design, scale, and maintain mission-critical cloud-native microservices, high-throughput APIs, and data pipelines. You will lead technical design, optimize database architectures, and champion engineering excellence.
+
+EXPERIENCE:
+
+Backend Architect | FastTech Innovations | Atlanta, GA
+January 2023 – Present (1.5 years)
+• Architect and develop high-throughput REST APIs and asynchronous microservices using Python and FastAPI.
+• Design, optimize, and maintain relational and non-relational database schemas using PostgreSQL and Redis.
+• Deploy, monitor, and scale containerized applications using Docker and AWS ECS/EKS.
+• Collaborate with cross-functional teams to define architecture and deliver production software.
+• Mentor junior engineers and champion code quality, testing standards, and CI/CD best practices.
+
+Software Developer | Alpha Solutions | Atlanta, GA
+June 2021 – December 2022 (1.5 years)
+• Minimum 2+ years of professional software engineering experience required.
+• Strong proficiency in Python and asynchronous frameworks like FastAPI or Asyncio.
+• Hands-on experience with Docker containerization and cloud infrastructure on AWS.
+
+EDUCATION:
+Bachelor of Science in Computer Science | Georgia State University | 2021
+
+SKILLS:
+Python, FastAPI, PostgreSQL, Redis, Docker, AWS, Microservices, CI/CD, Asynchronous Programming

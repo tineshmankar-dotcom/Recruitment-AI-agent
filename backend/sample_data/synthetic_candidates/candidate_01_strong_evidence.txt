@@ -1,0 +1,35 @@
+ELENA ROSTOVA
+Email: elena.rostova@example.com | Phone: +1-555-0101 | Location: Seattle, WA
+LinkedIn: linkedin.com/in/elena-rostova-lead | GitHub: github.com/erostova
+
+SUMMARY:
+Staff Backend Architect with 6+ years of specialized experience designing high-throughput distributed microservices, asynchronous stream processing systems, and cloud infrastructure using Python, FastAPI, Docker, and AWS.
+
+WORK EXPERIENCE:
+
+Staff Software Engineer | CloudScale Networks | Austin, TX
+March 2021 – Present (3.5 years)
+• Architected and deployed 14 asynchronous Python microservices using FastAPI and asyncpg, handling 28,000 requests/sec with 99.99% uptime SLA.
+• Designed PostgreSQL database sharding and connection pooling architectures with PgBouncer, reducing query latency by 45% across 4TB datasets.
+• Containerized production microservice pipelines with Docker multi-stage builds and automated CI/CD deployment on AWS ECS Fargate and EKS.
+• Implemented Redis distributed caching and Kafka event streams for real-time telemetry processing across 12 availability zones.
+• Mentored 8 software engineers on Python concurrency patterns, async testing with pytest, and clean architecture principles.
+
+Senior Backend Engineer | DataFlow Systems | Seattle, WA
+July 2018 – February 2021 (2.5 years)
+• Developed Python RESTful APIs and background ETL data pipelines utilizing PostgreSQL, Celery, and Docker.
+• Automated AWS infrastructure provisioning using Terraform (EC2, RDS PostgreSQL, S3, IAM policies, and VPC peering).
+• Spearheaded migration from legacy monolithic framework to containerized Python microservices, reducing deployment cycles from 2 weeks to 20 minutes.
+
+EDUCATION:
+Master of Science in Computer Science | University of Washington | 2018
+Bachelor of Science in Software Engineering | University of Washington | 2016
+
+PROJECTS:
+AsyncStream: High-performance Python event routing gateway built on FastAPI, Docker, and Redis pub/sub handling 100K concurrent WebSockets.
+
+TECHNICAL SKILLS:
+Languages & Frameworks: Python, FastAPI, Asyncio, Pytest, SQL, Bash
+Infrastructure & Cloud: AWS (ECS, RDS, S3, IAM, CloudWatch), Docker, Kubernetes, Terraform, Linux
+Databases & Caching: PostgreSQL, Redis, Kafka, Elasticsearch
+Architecture: Microservices, Distributed Systems, Asynchronous Event-Driven Design, REST APIs, CI/CD

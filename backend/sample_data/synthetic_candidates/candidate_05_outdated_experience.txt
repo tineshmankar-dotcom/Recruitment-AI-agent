@@ -1,0 +1,25 @@
+ARTHUR PENDLETON
+Email: arthur.pendleton@example.com | Phone: +1-555-0105 | Location: Philadelphia, PA
+
+SUMMARY:
+Software Developer with past background in legacy web applications, desktop scripts, and relational databases.
+
+WORK EXPERIENCE:
+
+IT Administrator & Webmaster | Heritage Publishing Corp | Philadelphia, PA
+August 2017 – Present (7 years)
+• Maintained local Windows server network, active directory accounts, and office printers.
+• Administered legacy WordPress blog and local Apache web server.
+• Performed monthly database backups to local external drives.
+
+Junior Web Developer | Legacy Tech Media | Philadelphia, PA
+January 2012 – May 2016 (4.4 years)
+• Wrote Python 2.7 server scripts and monolithic Django 1.4 views for content publishing.
+• Managed MySQL database tables and executed raw SQL queries for reporting.
+• Built monolithic server-rendered HTML templates with jQuery.
+
+EDUCATION:
+Bachelor of Science in Information Systems | Temple University | 2011
+
+SKILLS:
+Python 2.7, Django 1.4, MySQL, Apache, PHP, jQuery, Windows Server, Basic Linux, Shell scripts

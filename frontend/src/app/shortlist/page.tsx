@@ -534,20 +534,28 @@ export default function ShortlistPage() {
                     </div>
                   </div>
 
-                  {/* Actions: Why this score modal & Full Profile */}
-                  <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  {/* Actions: Why this score modal, Interview Questions & Full Profile */}
+                  <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
                     <button
                       onClick={() => setSelectedExplainMatch(cand)}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 hover:underline"
                     >
-                      <HelpCircle className="h-4 w-4" /> Why this score?
+                      <HelpCircle className="h-3.5 w-3.5" /> Why this score?
                     </button>
-                    <Link
-                      href={`/candidates/${cand.candidate_id}`}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                    >
-                      View Candidate Overview →
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/interview-questions?candidateId=${cand.candidate_id}&jobId=${selectedJobId}`}
+                        className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300"
+                      >
+                        <HelpCircle className="h-3 w-3" /> Interview Guide
+                      </Link>
+                      <Link
+                        href={`/candidates/${cand.candidate_id}`}
+                        className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                      >
+                        Profile →
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );

@@ -1,0 +1,30 @@
+CHLOE SIMMONS
+Email: chloe.simmons@example.com | Phone: +1-555-0104 | Location: New York, NY
+
+SUMMARY:
+Senior Frontend & UI Engineer with 5 years of expertise building reactive single-page applications, design systems, and frontend state management using React, Next.js, TypeScript, Tailwind CSS, and Node.js.
+
+WORK EXPERIENCE:
+
+Senior Frontend Engineer | PixelCraft Digital | New York, NY
+April 2021 – Present (3.5 years)
+• Built responsive enterprise SaaS web applications using React, Next.js, and TypeScript serving 500,000 monthly active users.
+• Developed UI component libraries with Tailwind CSS and Storybook, increasing frontend team velocity by 40%.
+• Integrated GraphQL and REST APIs with Node.js backend middleware services and WebSocket live streams.
+• Configured Docker build containers and AWS S3/CloudFront CDN distributions for global static asset delivery.
+
+Frontend Developer | WebSolutions Studio | Brooklyn, NY
+June 2019 – March 2021 (1.8 years)
+• Developed dynamic client portals using React, HTML5, SCSS, and Redux.
+• Automated cross-browser test suites using Cypress and Jest with GitHub Actions CI/CD.
+
+EDUCATION:
+Bachelor of Arts in Interactive Digital Media | NYU | 2019
+
+PROJECTS:
+DesignTokens UI: Open-source accessible design token library for React and Tailwind CSS.
+
+SKILLS:
+Frontend: React, Next.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS, Redux, Zustand
+Backend & Tools: Node.js, Express, REST APIs, GraphQL, Webpack, Vite, Git
+Infra & Deployment: Docker, AWS S3, CloudFront, Vercel, CI/CD, GitHub Actions

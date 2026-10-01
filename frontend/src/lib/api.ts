@@ -175,6 +175,34 @@ export interface CandidateComparisonResponse {
   rationale: string;
 }
 
+export interface InterviewQuestion {
+  id: string;
+  category: 'Technical' | 'Project' | 'Experience Verification' | 'Skill Verification' | 'Clarification';
+  target_topic: string;
+  question: string;
+  context_source: string;
+  rationale: string;
+  expected_signals: string[];
+  red_flags: string[];
+  difficulty: string;
+}
+
+export interface CandidateInterviewGuideResponse {
+  candidate_id: string;
+  candidate_name: string;
+  job_id: string;
+  job_title: string;
+  match_score: number;
+  match_grade: string;
+  total_questions: number;
+  interviewer_briefing: string;
+  technical_questions: InterviewQuestion[];
+  project_questions: InterviewQuestion[];
+  experience_questions: InterviewQuestion[];
+  skill_verification_questions: InterviewQuestion[];
+  clarification_questions: InterviewQuestion[];
+}
+
 export interface EducationItem {
   degree?: string;
   institution?: string;
@@ -408,5 +436,14 @@ export async function compareMultipleCandidates(candidateIds: string[], jobId?: 
 export async function fetchAllResumes(): Promise<Resume[]> {
   const res = await fetch(`${API_BASE_URL}/resumes`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch candidate pool');
+  return res.json();
+}
+
+export async function fetchCandidateInterviewGuide(resumeId: string, jobId?: string): Promise<CandidateInterviewGuideResponse> {
+  const url = jobId
+    ? `${API_BASE_URL}/resumes/${resumeId}/interview-questions?job_id=${jobId}`
+    : `${API_BASE_URL}/resumes/${resumeId}/interview-questions`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to fetch interview guide for candidate ${resumeId}`);
   return res.json();
 }

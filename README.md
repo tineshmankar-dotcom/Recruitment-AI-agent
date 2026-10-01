@@ -1,116 +1,215 @@
-# RecruitIQ - AI Recruitment Intelligence Platform
+# RecruitIQ — AI Recruitment Intelligence Platform
 
-**RecruitIQ** is an evidence-backed recruitment intelligence platform that analyzes Job Descriptions, normalizes skill taxonomies, bulk parses resumes, and extracts verifiable resume evidence with explainable proof.
+**RecruitIQ** is an explainable, evidence-backed recruitment intelligence platform designed to replace superficial keyword counting with verified production evidence, noise detection, multi-candidate comparison, and tailored interview guides.
 
 ---
 
-## 🏛️ Architecture & Tech Stack
+## 🏛️ 1. Architecture & Tech Stack
 
-### **Frontend**
-- **Framework**: Next.js (App Router) + TypeScript
-- **Styling**: Tailwind CSS (Clean recruiter UI with dark/light mode accents)
+```mermaid
+graph TD
+    A[Job Description Text / File] --> B[JD Structuring Engine]
+    B --> C[Classified Requirements: Mandatory, Preferred, Optional]
+    
+    D[Bulk Resumes: PDF, DOCX, TXT] --> E[Document & Resume Parser]
+    E --> F[Normalized Skills & Experience Extraction]
+    
+    C --> G[Verifiable Evidence Extractor]
+    F --> G
+    
+    G --> H[Noise Detection & Keyword Stuffing Engine]
+    G --> I[Evidence-Based Multi-Dimensional Matching Engine]
+    H --> I
+    
+    I --> J[Explainable Candidate Shortlist]
+    I --> K[Side-by-Side Candidate Comparison Matrix]
+    I --> L[Personalized Interview Question Agent]
+```
+
+### **Frontend Stack**
+- **Framework**: Next.js 16 (App Router) + TypeScript
+- **Styling**: Tailwind CSS (Executive dark/light palette with glassmorphism badges)
 - **Icons**: Lucide React
-- **Pages**:
-  1. **Dashboard** (`/`) — Real-time telemetry: Active Jobs, Ingested Resumes, Processed Profiles, Candidates Shortlisted, Requiring Review.
-  2. **Create Job** (`/jobs/create`) — Enter or paste Job Descriptions with live interactive analysis and 3-tier classification preview.
-  3. **Upload Resumes** (`/resumes/upload`) — Bulk ingestion for PDF, DOCX, and TXT files with live progress, duplicate detection badges, and error handling.
-  4. **Candidate Pool** (`/candidates`) — Searchable candidate database with skill tags, company experience, and status badges.
-  5. **Candidate Details** (`/candidates/[id]`) — **Evidence Extraction & Verification view**, skill normalization taxonomy, structured profile timeline, and preserved verbatim original resume text view.
-  6. **Shortlist** (`/shortlist`) — Pipeline review board grouped by Job.
-  7. **Interview Questions** (`/interview-questions`) — Role-tailored questions generated directly from classified JD requirements.
-  8. **Settings** (`/settings`) — Engine parameters, database provider, and duplicate detection thresholds.
+- **Key Modules**:
+  - `/` — **Dashboard**: Real-time pipeline metrics, recent jobs, and processed candidates.
+  - `/jobs/create` — **Create Job**: Live JD parser with 3-tier requirement classification preview.
+  - `/resumes/upload` — **Upload Resumes**: Bulk upload with SHA-256 duplicate detection & progress bars.
+  - `/candidates` — **Candidate Pool**: Searchable candidate table with multi-select comparison.
+  - `/candidates/[id]` — **10-Section Candidate Profile**: Candidate Overview, Match Summary, Requirement Analysis, Evidence, Experience, Projects, Skills, Missing Requirements, Uncertain Claims, and Noise Telemetry.
+  - `/candidates/compare` — **Multi-Candidate Comparison Matrix**: Side-by-side evaluation grid across all criteria.
+  - `/shortlist` — **Explainable Shortlist**: Multi-dimensional scoring cards, 7-dimension filters, and "Why this score?" modal.
+  - `/interview-questions` — **Personalized Interview Agent**: 5-category interview guides with interviewer briefings.
+  - `/benchmark` — **Candidate A vs B Benchmark**: Live interactive proof that *More Keywords ≠ Better Candidate*.
 
-### **Backend**
+### **Backend Stack**
 - **Framework**: Python 3.14 + FastAPI
-- **Database**: PostgreSQL / SQLite abstraction layer
-- **Parsers & Engines**:
-  - `DocumentParser`: PDF (`pypdf`), DOCX (`python-docx`), and TXT extraction
+- **Database**: PostgreSQL / SQLite Pure-Python Repository Pattern
+- **Parsers & Agents**:
+  - `DocumentParser`: High-res PDF, DOCX, and TXT text extraction
   - `JobDescriptionParser`: 10-field extraction + 3-tier classification (MANDATORY, PREFERRED, OPTIONAL)
-  - `SkillNormalizer`: Canonical alias mapping, confidence scoring, avoiding false merges (Java != JavaScript, C++ != C#)
-  - `EvidenceExtractor`: 9-tier configurable evidence scoring engine retrieving exact verbatim resume quotes
-- **Security & Integrity**: SHA-256 duplicate fingerprinting, candidate UUIDs, zero-hallucination evidence extraction.
+  - `SkillNormalizer`: Canonical taxonomy resolution with protected distinction (`Java != JavaScript`, `C++ != C#`)
+  - `EvidenceExtractor`: 9-tier evidence strength scoring engine with verbatim sentence citations
+  - `NoiseDetector`: Keyword stuffing, repetition, unsupported claims, and JD copy-paste detection
+  - `MatchingEngine`: Multi-dimensional evidence-weighted scoring algorithm
+  - `InterviewAgent`: Personalized 5-category technical & behavioral interview guide synthesizer
 
 ---
 
-## 🔍 Phase 3 Features: Skill Normalization & Evidence Extraction
+## ⚙️ 2. Environment Variables & Setup
 
-### 1. Skill Normalization Engine
-- Normalizes equivalent skills to canonical entities:
-  - `Python programming` / `Python 3` → `Python`
-  - `ML` / `deep learning` → `Machine Learning` / `Deep Learning`
-  - `AWS Cloud` / `Amazon Web Services` → `AWS`
-  - `Postgres` / `postgre` → `PostgreSQL`
-  - `ReactJS` / `react.js` → `React`
-  - `K8s` → `Kubernetes`
-- **Guarded Distinction**: Strictly prevents false merges between unrelated technologies (`Java` vs `JavaScript`, `C++` vs `C#`, `TypeScript` vs `JavaScript`).
-- Stores `original_skill`, `normalized_skill`, `confidence`, and `category`.
+### **Environment Variables**
+Create `.env` inside `frontend/` (optional for defaults):
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
 
-### 2. Verifiable Evidence Extraction
-- Scans candidate work history, projects, certifications, education, and text for every JD requirement.
-- Stores:
-  - `requirement`: Target skill / qualification
-  - `skill`: Normalized canonical skill
-  - `evidence_text`: Verbatim quote from resume
-  - `resume_location`: Location (e.g., *Work Experience - Stripe (Lead Developer)*)
-  - `project_or_job`: Entity where applied
-  - `duration` & `recency`: e.g. *May 2021 - Present (Current)*
-  - `context`: Role & scope
-  - `evidence_strength` (9 tiers):
-    1. *Mere mention* (1.0)
-    2. *Skill-list mention* (2.0)
-    3. *Course/training* (3.5)
-    4. *Academic project* (5.0)
-    5. *Personal project* (6.0)
-    6. *Internship* (7.0)
-    7. *Professional experience* (8.0)
-    8. *Production/deployed experience* (9.0)
-    9. *Leadership/ownership* (10.0)
-- **Zero-Hallucination Guarantee**: Never invents evidence. When not found, returns `"Evidence not found in resume."` without assuming the candidate lacks the skill.
-
-### 3. Evidence View on Candidate Details
-- Dedicated **"Evidence Extraction & Verification"** tab on candidate profiles.
-- Shows evidence badges, evidence scores (e.g. `9.5/10.0`), confidence percentages, and verbatim quotes.
-- **"View Resume Evidence"** action modal for deep inspection.
-- Filter toggle: All Requirements, Evidence Found, Evidence Not Found.
+Create `.env` inside `backend/` (optional for defaults):
+```env
+DATABASE_URL=sqlite:///./recruitiq.db
+API_V1_STR=/api/v1
+DISABLE_SQLALCHEMY_CEXT=1
+```
 
 ---
 
-## 🚀 API Endpoints
+### **Local Setup Instructions**
+
+#### **1. Backend (Python + FastAPI)**
+```bash
+cd backend
+# Create and activate virtual environment
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
+# Install dependencies
+pip install fastapi uvicorn pydantic python-docx pypdf requests
+
+# Launch the FastAPI Server
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+API Documentation will be live at `http://127.0.0.1:8000/docs`.
+
+#### **2. Frontend (Next.js + TypeScript)**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open `http://localhost:3000` in your web browser.
+
+---
+
+## 🧠 3. End-to-End AI Pipeline
+
+```
+Job Description ──► JD Analysis ──► Bulk Resume Parsing ──► Skill Normalization
+                                                                    │
+Interview Questions ◄── Explainable Shortlist ◄── Matching Engine ◄── Evidence Extraction
+                                                        ▲                  │
+                                                        └──── Noise Engine ◄
+```
+
+1. **Job Description Structuring**: Extracts job title, required/preferred experience, technical stack, certifications, and classifies every requirement as `MANDATORY`, `PREFERRED`, or `OPTIONAL`.
+2. **Resume Parsing & Entity Extraction**: Parses candidate contact info, employment timelines, calculated durations, responsibilities, projects, and original verbatim text.
+3. **Skill Normalization**: Maps thousands of raw terms to canonical taxonomy keys (`Python 3` / `Python programming` → `Python`, `ML` → `Machine Learning`) with guarded distinctions.
+4. **Verifiable Evidence Extraction**: Scans work history and project sentences for every JD requirement, ranking evidence across 9 tiers (from *Mere mention: 1.0* to *Leadership/ownership: 10.0*).
+5. **Noise Detection & Stuffing Telemetry**: Measures the ratio of unbacked keywords to evidence-backed sentences, flags JD copy-pasting, and applies noise penalties.
+6. **Multi-Dimensional Matching Engine**: Weighs mandatory coverage, relevant experience, verified evidence strength, depth, and recency while penalizing noise and uncertainty.
+7. **Explainable Shortlist & Comparison Matrix**: Provides a row-by-row comparative matrix and *"Why this candidate received this score"* rationales.
+8. **Personalized Interview Agent**: Synthesizes a 5-category interview guide (Technical, Project, Experience, Skill Verification, Clarification) with expected signals and red flags.
+
+---
+
+## 📊 4. Matching Methodology & Core Philosophy
+
+### **The Golden Rule**:
+$$\text{MORE KEYWORDS} \neq \text{BETTER CANDIDATE}$$
+$$\text{STRONGER EVIDENCE} + \text{VERIFIED EXPERIENCE} = \text{HIGHER RANK}$$
+
+### **Scoring Weights Formula**:
+$$\text{Final Score} = w_m \cdot M + w_e \cdot E + w_v \cdot V + w_d \cdot D + w_r \cdot R + w_p \cdot P - \text{NoisePenalty} - \text{UncertaintyPenalty}$$
+
+- **Mandatory Requirements ($M$)**: 35% weight
+- **Relevant Experience ($E$)**: 20% weight (calculated from verified employment dates)
+- **Evidence Strength ($V$)**: 15% weight (based on exact quote depth)
+- **Skill Depth ($D$)**: 10% weight
+- **Recency ($R$)**: 10% weight
+- **Preferred Requirements ($P$)**: 10% weight
+- **Noise Penalty**: Up to $-20\%$ for keyword stuffing & copy-pasting
+- **Uncertainty Penalty**: Up to $-10\%$ for ambiguous / list-only claims
+
+### **Zero-Hallucination Policy**:
+If evidence is absent from the resume text, RecruitIQ outputs:
+> *"Evidence not found in resume."*
+Status is marked `MISSING` with explanation: *"Requirement was not found in the resume. (Does not assume lack of skill)"*.
+
+---
+
+## 📡 5. Complete REST API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
 | `POST` | `/jobs` | Create a job posting and analyze/structure JD |
 | `GET` | `/jobs` | List all active job postings with resume counts |
 | `GET` | `/jobs/{job_id}` | Retrieve single job with structured parsed requirements |
-| `POST` | `/jobs/{job_id}/resumes` | Bulk upload resumes (PDF, DOCX, TXT) with duplicate detection |
-| `GET` | `/jobs/{job_id}/resumes` | List all resumes associated with a job |
+| `POST` | `/jobs/{job_id}/resumes` | Bulk upload resumes (PDF, DOCX, TXT) with SHA-256 duplicate detection |
+| `GET` | `/jobs/{job_id}/resumes` | List all candidate resumes linked to a job |
 | `GET` | `/resumes/{resume_id}` | Get candidate details with parsed entities and original text |
 | `GET` | `/resumes/{resume_id}/evidence` | Extract verifiable evidence against job requirements |
-| `POST` | `/resumes/{resume_id}/evidence` | Extract evidence for custom list of requirements |
-| `POST` | `/skills/normalize` | Normalize raw skill strings to canonical representations |
+| `POST` | `/skills/normalize` | Normalize raw skill strings to canonical entities |
 | `POST` | `/analyze-jd` | Analyze raw JD text and return structured JSON |
-| `GET` | `/stats/dashboard` | Dashboard metrics and telemetry |
+| `GET` | `/jobs/{job_id}/candidates/{resume_id}/match` | Get candidate match score breakdown & noise telemetry |
+| `GET` | `/resumes/{resume_id}/match` | Get standalone candidate match score & explainability |
+| `GET` | `/jobs/{job_id}/matches` | Ranked candidate shortlist ordered by evidence |
+| `POST` | `/candidates/compare` | Multi-candidate side-by-side requirement matrix |
+| `GET` | `/demo/comparison` | Candidate A (stuffed) vs Candidate B (evidence) benchmark |
+| `GET` | `/resumes/{resume_id}/interview-questions` | Personalized 5-category interview guide |
+| `GET` | `/stats/dashboard` | Real-time platform metrics and activity feeds |
+| `GET` | `/health` | API Healthcheck |
 
 ---
 
-## 🛠️ Quickstart & Local Execution
+## 🧪 6. Automated Testing & Verification
 
-### 1. Run Backend (FastAPI)
+### **1. Run Full Phase 6 Resilience & 10-Candidate Test Suite**
 ```bash
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+python backend/test_phase6_resilience.py
 ```
+This tests:
+- 404 missing resume handling
+- Empty JD handling
+- Ingestion of all 10 synthetic candidate archetypes
+- Duplicate resume detection
+- Corrupted PDF handling
+- Critical rule verification (Elena & Viktor outrank Kevin Buzzword)
+- Personalized Interview Question Agent generation
 
-Swagger API Docs: `http://localhost:8000/docs`
-
-### 2. Run Frontend (Next.js)
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend UI: `http://localhost:3000`
-
-### 3. Run Automated Tests
+### **2. Run Matching Engine & Candidate A vs B Test Suite**
 ```bash
 python backend/test_flow.py
 ```
+
+### **3. Run Frontend Production Typecheck & Build**
+```bash
+cd frontend
+npm run build
+```
+Generates clean production builds across all 12 application routes.
+
+---
+
+## 👥 10 Synthetic Candidate Profiles Included
+
+1. **Candidate 1** (`candidate_01_strong_evidence.txt`): Elena Rostova — Staff Engineer with 6+ years verified Python, FastAPI, Docker, AWS handling 28K req/sec.
+2. **Candidate 2** (`candidate_02_keyword_stuffed.txt`): Kevin Buzzword — Repeats Python 30+ times, only 2-month internship.
+3. **Candidate 3** (`candidate_03_transferable_experience.txt`): Marcus Vance — Senior Go/C++ distributed systems engineer with strong systems depth.
+4. **Candidate 4** (`candidate_04_missing_mandatory.txt`): Chloe Simmons — Senior Frontend React engineer with zero Python/backend data experience.
+5. **Candidate 5** (`candidate_05_outdated_experience.txt`): Arthur Pendleton — Outdated Python 2.7 / Django 1.4 experience from 2012.
+6. **Candidate 6** (`candidate_06_project_only.txt`): Samantha Chen — Berkeley CS graduate with impressive FastAPI/LLM projects but 0 enterprise employment.
+7. **Candidate 7** (`candidate_07_uncertain_claims.txt`): Jordan Blake — Vague bullet points and ambiguous scale.
+8. **Candidate 8** (`candidate_08_copied_jd.txt`): Derek Plagiar — Copied lines verbatim from Job Description text.
+9. **Candidate 9** (`candidate_09_concise_expert.txt`): Viktor Kravchenko — Concise expert with fewer keywords but 8 years of high-volume payment processing ($40M daily).
+10. **Candidate 10** (`candidate_10_broad_shallow.txt`): Nathan Generalist — Lists 30+ technologies with shallow exposure to each.

@@ -1,0 +1,30 @@
+SAMANTHA CHEN
+Email: samantha.chen@example.com | Phone: +1-555-0106 | Location: Berkeley, CA
+GitHub: github.com/schen-projects | Portfolio: schen-dev.io
+
+SUMMARY:
+Recent Computer Science Graduate & Open Source Developer with intensive hands-on academic projects building microservices, AI inference endpoints, and containerized backend architectures using Python, FastAPI, Docker, and PostgreSQL.
+
+EDUCATION:
+Bachelor of Science in Computer Science | UC Berkeley | May 2024
+GPA: 3.88 | Relevant Coursework: Distributed Systems, Operating Systems, Database Internals, Machine Learning
+
+KEY TECHNICAL PROJECTS:
+
+NeuroChat - LLM Microservice Gateway (Capstone Project, 2024):
+• Built an asynchronous API gateway in Python and FastAPI that orchestrates multi-agent LLM reasoning chains and streaming token responses.
+• Integrated PostgreSQL with pgvector for embedding semantic search and Redis for conversation session caching.
+• Packaged entire system into multi-container Docker Compose cluster deployed to AWS ECS test environment.
+
+FastVector - High-Throughput Vector Search Service (Open Source Project, 2023):
+• Implemented a high-performance vector indexing service using Python, NumPy, and FastAPI handling 1,500 similarity queries/sec.
+• Automated testing with pytest and built CI/CD workflows using GitHub Actions.
+
+CloudStore - Distributed Storage Sandbox (Academic Project, 2023):
+• Developed a fault-tolerant object store emulator in Python utilizing Docker containers, consistent hashing, and REST APIs.
+
+SKILLS:
+Languages & Frameworks: Python 3.11, FastAPI, Asyncio, Pytest, SQL, NumPy
+Databases: PostgreSQL, pgvector, Redis
+Infrastructure & DevOps: Docker, Docker Compose, AWS (ECS, S3, EC2), GitHub Actions, Linux
+Concepts: Microservices, REST APIs, Vector Search, Containerization, Distributed Systems

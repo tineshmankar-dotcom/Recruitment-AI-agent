@@ -1,0 +1,25 @@
+NATHAN GENERALIST
+Email: nathan.generalist@example.com | Phone: +1-555-0110 | Location: Miami, FL
+
+SUMMARY:
+Full-stack generalist with broad exposure across Python, JavaScript, Java, Go, Rust, C#, PHP, Ruby, Kotlin, Swift, React, Angular, Vue, FastAPI, Django, Flask, Express, Spring Boot, Docker, Kubernetes, AWS, GCP, Azure, PostgreSQL, MongoDB, Cassandra, Redis, GraphQL, and Web3.
+
+EXPERIENCE:
+
+Technical Generalist | OmniVenture Labs | Miami, FL
+June 2022 – Present (2 years)
+• Worked with diverse tech stacks on short exploratory proofs of concept.
+• Built quick prototypes using Python, Node.js, and React.
+• Ran Docker images and deployed test lambdas on AWS and GCP.
+• Looked at PostgreSQL, MongoDB, and Firebase databases for different customer demos.
+
+Junior Web Developer | Agency Nine | Miami, FL
+September 2021 – May 2022 (8 months)
+• Created landing pages using WordPress, PHP, JavaScript, and HTML/CSS.
+• Assisted with client website updates and basic database backups.
+
+EDUCATION:
+Bachelor of Science in Information Technology | FIU | 2021
+
+SKILLS:
+Python, JavaScript, TypeScript, Java, Go, Rust, C#, PHP, Ruby, React, Vue, Angular, FastAPI, Django, Flask, Express, Docker, Kubernetes, AWS, GCP, Azure, PostgreSQL, MySQL, MongoDB, Redis, GraphQL, REST, Tailwind CSS

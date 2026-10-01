@@ -1,0 +1,24 @@
+VIKTOR KRAVCHENKO
+Email: viktor.k@example.com | Phone: +1-555-0109 | Location: Denver, CO
+
+SUMMARY:
+Principal Infrastructure Engineer with 8 years of specialized experience in high-throughput Python backends, distributed systems, and cloud infrastructure.
+
+EXPERIENCE:
+
+Principal Infrastructure Engineer | Apex Data Labs | Denver, CO
+January 2020 – Present (4.5 years)
+• Built high-throughput payment ingestion core in Python and FastAPI, processing $40M daily volume across 12 distributed services with sub-10ms response times.
+• Engineered PostgreSQL database partitioning and Redis distributed caching layer to support 15,000 queries/sec with zero downtime.
+• Orchestrated microservice container workloads on AWS using Docker, ECS, and automated CI/CD deployment pipelines.
+
+Senior Backend Engineer | Stratos Networks | Boulder, CO
+March 2016 – December 2019 (3.8 years)
+• Engineered asynchronous telemetry ingestion pipelines and microservice APIs with Python, FastAPI, and PostgreSQL on AWS.
+• Reduced enterprise infrastructure cost by 30% via Docker container resource optimization.
+
+EDUCATION:
+Bachelor of Science in Computer Engineering | Colorado School of Mines | 2016
+
+SKILLS:
+Python, FastAPI, PostgreSQL, Docker, AWS, Redis, Microservices, CI/CD, Distributed Systems

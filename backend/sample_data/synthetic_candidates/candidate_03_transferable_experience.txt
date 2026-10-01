@@ -1,0 +1,32 @@
+MARCUS VANCE
+Email: marcus.vance@example.com | Phone: +1-555-0103 | Location: Chicago, IL
+
+SUMMARY:
+Senior Distributed Systems Architect with 7 years of deep infrastructure experience building high-concurrency microservices, high-throughput distributed storage engines, and cloud platforms using Go, C++, Docker, Kubernetes, and AWS.
+
+WORK EXPERIENCE:
+
+Lead Systems Engineer | Apex Distributed Labs | Chicago, IL
+January 2020 – Present (4.5 years)
+• Built high-performance distributed caching proxy handling 500,000 queries/sec using Go and gRPC with 2ms p99 latency.
+• Architected cloud infrastructure on AWS (EKS, VPC, RDS, S3) with automated Terraform and CI/CD pipelines.
+• Integrated PostgreSQL databases with custom Raft consensus replication and automated failover protocols.
+• Automated container orchestrations using Docker and Kubernetes for 80+ distributed compute nodes.
+• Authored Python automation harnesses and microservices benchmarks to stress test throughput bottlenecks.
+
+Systems Software Engineer | CoreScale Infrastructure | Boston, MA
+June 2017 – December 2019 (2.5 years)
+• Developed multi-threaded networked storage daemons in C++ and Go on Linux systems.
+• Designed automated regression test runners and monitoring telemetry using Python and Prometheus.
+
+EDUCATION:
+Bachelor of Science in Computer Science & Applied Mathematics | UIUC | 2017
+
+PROJECTS:
+RaftStore-Go: Open-source distributed key-value store with Raft consensus and Dockerized clusters.
+
+SKILLS:
+Languages: Go, C++, Python (automation & scripting), SQL, Bash
+Cloud & Infra: AWS (EKS, RDS, S3, CloudWatch), Docker, Kubernetes, Terraform, Linux Internals
+Databases: PostgreSQL, Redis, distributed key-value stores
+Architecture: Distributed Systems, Raft Consensus, High-Concurrency Networking, Microservices, CI/CD
