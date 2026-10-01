@@ -1,0 +1,34 @@
+Job Title: Lead Python Backend Architect
+
+Location: Remote (US / EMEA / APAC)
+Department: Platform & Core Infrastructure
+
+About Us:
+RecruitIQ is building the next generation of AI-driven recruitment intelligence.
+
+Role & Responsibilities:
+- Lead the architecture and design of high-scale Python microservices and async data pipelines.
+- Build clean and resilient RESTful APIs using FastAPI and Pydantic.
+- Optimize relational schemas with PostgreSQL and high-performance caching layers using Redis.
+- Champion code quality, comprehensive automated test suites, and Dockerized deployments.
+- Mentor junior engineers and collaborate across product and design teams.
+
+Requirements (Must Have):
+- Minimum of 5+ years of software engineering experience in Python.
+- Deep expertise with FastAPI or Django and asynchronous programming (asyncio).
+- Strong relational database experience with PostgreSQL and SQL query tuning.
+- Solid experience with Docker, Kubernetes, and automated CI/CD pipelines.
+
+Nice to Have (Preferred):
+- Experience with Cloud platforms (AWS or GCP).
+- Familiarity with Vector Databases (pgvector, FAISS) or Machine Learning model serving.
+- Knowledge of message brokers such as Kafka or RabbitMQ.
+
+Education:
+- Bachelor's degree in Computer Science, Software Engineering, or equivalent practical experience.
+
+Certifications:
+- AWS Certified Solutions Architect is a plus.
+
+Soft Skills:
+- Clear communication, leadership, and structured problem-solving mindset.

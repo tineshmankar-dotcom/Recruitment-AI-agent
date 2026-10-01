@@ -1,0 +1,40 @@
+Alice Johnson
+Email: alice.johnson@example.com | Phone: (555) 234-5678 | Location: San Francisco, CA
+LinkedIn: linkedin.com/in/alicejohnson | GitHub: github.com/alicejohnson
+
+Professional Summary:
+Lead Python Engineer with 6+ years of experience building resilient microservices, high-scale REST APIs, and distributed data systems. Expert in FastAPI, Python, PostgreSQL, and Docker container orchestration.
+
+Work Experience:
+
+Lead Python Developer | Stripe
+May 2021 - Present
+- Architected and maintained core payment routing APIs using Python, FastAPI, and PostgreSQL handling 50M+ requests daily.
+- Reduced database p99 query latency by 45% through PostgreSQL indexing and Redis caching strategies.
+- Implemented automated CI/CD pipelines with GitHub Actions and Docker Kubernetes deployments.
+- Mentored a distributed team of 6 engineers, spearheading architectural design reviews.
+
+Senior Backend Engineer | Uber
+June 2018 - April 2021
+- Developed real-time dispatch microservices using Python, Django, Redis, and Kafka.
+- Scaled event processing pipelines to handle 100k events/sec with 99.99% availability.
+- Collaborated with DevOps to deploy infrastructure using Terraform and AWS.
+
+Education:
+Bachelor of Science in Computer Science
+Stanford University | 2014 - 2018
+
+Key Technical Projects:
+Project: FastQueue - High performance distributed task queue
+- Built asynchronous job queue using Python asyncio, Redis, and WebSockets with sub-millisecond dispatch times.
+
+Skills & Technologies:
+Python, FastAPI, Django, PostgreSQL, Redis, Docker, Kubernetes, AWS, Kafka, Git, CI/CD, Linux, Microservices, REST API
+
+Certifications:
+- AWS Certified Solutions Architect Associate
+- CKA (Certified Kubernetes Administrator)
+
+Achievements:
+- Awarded Top Engineering Contributor at Stripe 2023.
+- Published technical paper on distributed asynchronous lock management.

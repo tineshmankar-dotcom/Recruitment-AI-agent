@@ -1,0 +1,29 @@
+Bob Smith
+Email: bob.smith@example.com | Phone: (555) 987-6543 | Location: New York, NY
+
+Summary:
+Full Stack & Backend Developer with 4 years of experience specializing in Python, React, TypeScript, and cloud technologies.
+
+Work Experience:
+
+Software Engineer | Databricks
+January 2022 - Present
+- Built full stack internal analytics dashboards using React, TypeScript, Next.js, and FastAPI.
+- Implemented robust database migrations and PostgreSQL queries.
+- Deployed microservices on AWS using Docker and GitHub Actions.
+
+Junior Software Developer | Spotify
+July 2020 - December 2021
+- Contributed to backend REST APIs using Python and Flask.
+- Integrated automated unit and integration tests with 90%+ coverage.
+
+Education:
+Bachelor of Engineering in Information Technology
+Cornell University | 2016 - 2020
+
+Projects:
+Project: CloudMonitor - Infrastructure Health Platform
+- Designed responsive React interface and Python telemetry collectors.
+
+Skills:
+Python, React, TypeScript, Next.js, FastAPI, Flask, PostgreSQL, Docker, AWS, Git, Tailwind CSS, REST API
